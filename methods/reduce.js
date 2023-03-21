@@ -57,3 +57,23 @@ log(reduce((total_price, product) => total_price + product.price, 0, products));
 
 // reduce 같은 경우에도 보조함수를 통해 안쪽에 있는 값의 다형성을 잘 지원해주고
 // 이터러블을 통해 외부에 대한 값(products)도 더 잘 지원하는 리듀서 함수이다.
+
+const myReducer = (func, acc, iter) => {
+	if (!iter) {
+		const it = acc[Symbol.iterator]();
+		acc = it.next().value;
+
+		iter = it;
+	}
+
+	for (const item of iter) {
+		acc = func(acc, item);
+	}
+
+	return acc;
+};
+
+log(
+	5,
+	myReducer((pre, cur) => pre + cur.price, products),
+);
