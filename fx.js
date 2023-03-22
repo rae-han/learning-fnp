@@ -2,7 +2,7 @@ export const log = console.log;
 
 export const add = (a, b) => a + b;
 
-export const curry = func => (a, ..._) => _.length ? func(a, ..._) : (..._) => func(a, ..._)
+const curry = func => (a, ...rest) => rest.length ? func(a, ...rest) : (...rest) => func(a, ...rest);
 
 export const _map = (func, iter) => {
 	let res = [];
@@ -44,9 +44,14 @@ export const _reduce = (func, acc, iter) => {
 };
 export const reduce = curry(_reduce);
 
-export const go = (...args) => reduce((arg, func) => func(arg), args);
+// export const go = (...args) => reduce((arg, func) => func(arg), args);
+
+export const go = (...args) => reduce((arg, func) => func(arg), args)
+// reduce((arg, func) => func(arg), args)
+// args의 첫번째 값은 초기 값으로 사용하면서
+// 초기 값으로부터 누적된 값은 arg로 넘겨주면서
+// args의 나머지 인자를 하나씩 꺼내서 func에 전달한다.
 
 export const pipe1 = (...fs) => (arg) => go(arg, ...fs)
-export const pipe2 = (func, ...fs) => (...args) => go(func(...args), ...fs)
 
 export const pipe = (func, ...fs) => (...args) => go(func(...args), ...fs)

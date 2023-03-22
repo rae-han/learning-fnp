@@ -1,6 +1,6 @@
 // pipe1 같은 경우에는??
 import {add, filter, go, log, map, reduce} from "../fx.js";
-import {products} from "../methods/products.js";
+import {products} from "../2.methods/products.js";
 
 // pipe는 함수를 리턴하는 함수로
 // go에 있는 함수를 축약한 함수이다.

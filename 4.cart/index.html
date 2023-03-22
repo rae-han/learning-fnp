@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+<!--  <script src="../fx.js" ></script>-->
+<!--  <script src="../data.js" ></script>-->
+  <script src="./index.js" ></script>
+</head>
+<body>
+  <h3>장바구니</h3>
+  <div id="cart"></div>
+
+
+  <script>
+    console.log(products)
+
+    // 총 수량
+    log('#### 1')
+    go(
+      products,
+      map(p => p.quantity),
+      reduce(add),
+      log,
+    )
+
+    // 함수로 만든 총 수량
+    const total_quantity1 = products => go(
+      products,
+      map(p => p.quantity),
+      reduce(add),
+      log,
+    )
+
+    total_quantity1(products)
+
+    const total_quantity2 = pipe(
+      map(p => p.quantity),
+      reduce(add),
+      log,
+    )
+
+    total_quantity2(products)
+
+    const total_price1 = pipe(
+      map(p => p.quantity * p.price),
+      reduce(add),
+    )
+
+    log(total_price1(products))
+
+    // sum 이라는 새로운 함수 사용
+    // 기존 코드는 map 함수 안의 보조함수 때문에 qunttity와 price가 있는 특정 상품 도메인에서만 사용할 수 있다.
+    // 즉 products라는 도메인을 위한 함수이다.
+    // 그걸 해결하귀 위해서 함수와 이터레이터를 받아 고로 map에 들어가는 보조 함수를 위임하는 방법을 사용
+    const _sum = (f, iter) => go(
+      iter,
+      map(f),
+      reduce(add),
+    )
+    // 이 함수를 이용하여 위 함수를 변형 가능하다.
+
+    // quantity
+    log(_sum(p => p.quantity, products))
+
+    const total_quantity3 = products => _sum(p => p.quantity, products);
+    log(total_quantity3(products))
+
+    const total_price2 = products => _sum(p => p.quantity * p.price, products);
+    log(total_price2(products))
+
+
+    // sum에 curry을 적용하면?
+    const sum = curry(_sum);
+    // curry를 적용하면 아래와 같이 변형할 수 있다.
+    const total_price3 = products => sum(p => p.quantity * p.price)(products);
+    log(3, total_price3(products))
+    // products를 받아서 sum이 리턴한 함수에 전달하고만 있기 때문에
+    // products를 받는 자리에 아래와 같이 코드를 대신해도 작동한단 뜻이다.
+    const total_quantity4 = sum(p => p.quantity);
+    const total_price4 = sum(p => p.quantity * p.price);
+    log(4, total_price4(products))
+
+    // sum은 아래와 같이 products가 아니여도 되므로 추상화 레벨이 높다.
+    log(sum(u => u.age, [
+      {age: 10},
+      {age: 20},
+      {age: 30},
+    ]))
+
+    document.querySelector('#cart').innerHTML = `
+    <table>
+      <tr>
+        <th></th>
+        <th>상품 이름</th>
+        <th>가격</th>
+        <th>수량</th>
+        <th>총 가격</th>
+      </tr>
+      ${go(products, sum(p => `
+          <tr>
+            <td><input type="checkbox" ${p.is_selected ? 'checked' : ''}></td>
+            <td>${p.name}</td>
+            <td>${p.price}</td>
+            <td><input type="number" value="${p.quantity}"></td>
+            <td>${p.price * p.quantity}</td>
+          </tr>
+      `))}
+      <tr>
+        <td colspan="3">합계</td>
+        <td>${total_quantity4(filter(p => p.is_selected, products))}</td>
+        <td>${total_price4(filter(p => p.is_selected, products))}</td>
+      </tr>
+    </table>
+  `;
+
+   // curry 없이
+    // const sum = (f) => pipe(
+    //   map(f),
+    //   reduce(add),
+    // );
+    //
+    // const total_quantity = sum(
+    //   p => p.quantity
+    // );
+    //
+    // log(total_quantity(products));
+    //
+    // const total_price = sum(
+    //   p => p.price * p.quantity
+    // );
+    //
+    // log(total_price(products));
+  </script>
+</body>
+</html>
+
+

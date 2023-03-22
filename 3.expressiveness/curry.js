@@ -1,5 +1,5 @@
 import {add, filter, go, log, map, pipe, reduce} from "../fx.js";
-import {products} from "../methods/products.js";
+import {products} from "../2.methods/products.js";
 
 // # curry는 함수를 값으로 다루면서
 // 받아둔 함수를 내가 원하는 시점에 평가시키는 함수
