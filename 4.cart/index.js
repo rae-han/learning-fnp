@@ -10,7 +10,9 @@ const log = console.log;
 
 const add = (a, b) => a + b;
 
-const curry = func => (a, ...rest) => rest.length ? func(a, ...rest) : (...rest) => func(a, ...rest);
+// const curry = func => (a, ...rest) => rest.length ? func(a, ...rest) : (...rest) => func(a, ...rest);
+
+const curry = func => (arg, ...args) => args.length ? func(arg, ...args) : (...args) => func(arg, ...args);
 
 const _map = (func, iter) => {
   let res = [];

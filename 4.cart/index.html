@@ -9,6 +9,7 @@
 <!--  <script src="../fx.js" ></script>-->
 <!--  <script src="../data.js" ></script>-->
   <script src="./index.js" ></script>
+  <script src="../3.expressiveness/pipe.js"></script>
 </head>
 <body>
   <h3>장바구니</h3>
@@ -48,9 +49,15 @@
     const total_price1 = pipe(
       map(p => p.quantity * p.price),
       reduce(add),
+      log,
     )
 
-    log(total_price1(products))
+    total_price1(products)
+
+    const mySum = (fn, iter) => pipe(
+      map(fn),
+      reduce(add),
+    )(iter)
 
     // sum 이라는 새로운 함수 사용
     // 기존 코드는 map 함수 안의 보조함수 때문에 qunttity와 price가 있는 특정 상품 도메인에서만 사용할 수 있다.
@@ -64,7 +71,9 @@
     // 이 함수를 이용하여 위 함수를 변형 가능하다.
 
     // quantity
-    log(_sum(p => p.quantity, products))
+    log(10, _sum(p => p.quantity, products))
+    log(11)
+    mySum(p => p.quantity, products)
 
     const total_quantity3 = products => _sum(p => p.quantity, products);
     log(total_quantity3(products))
@@ -83,6 +92,11 @@
     const total_quantity4 = sum(p => p.quantity);
     const total_price4 = sum(p => p.quantity * p.price);
     log(4, total_price4(products))
+
+    const curriedMySum = curry(mySum)
+
+    const totalPrice = curriedMySum(p => p.quantity * p.price);
+    log(15, totalPrice(products));
 
     // sum은 아래와 같이 products가 아니여도 되므로 추상화 레벨이 높다.
     log(sum(u => u.age, [
@@ -122,7 +136,6 @@
     //   map(f),
     //   reduce(add),
     // );
-    //
     // const total_quantity = sum(
     //   p => p.quantity
     // );
@@ -134,6 +147,8 @@
     // );
     //
     // log(total_price(products));
+
+    // 명시적으로 단항 함수를 만드는 것은 정적 검사 도구나 IDE 의 도움을 더 잘 받을 수 있다는 장점이 있습니다 :)
   </script>
 </body>
 </html>
