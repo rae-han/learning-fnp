@@ -54,7 +54,6 @@ const reduce = curry(_reduce);
 
 // const go = (...args) => reduce((acc, fn) => fn(acc), args);
 const go = (...args) => reduce((acc, fn) => {
-  console.log(acc, '////', fn)
   return fn(acc)
 }, args);
 
@@ -130,4 +129,5 @@ export {
   range,
   take,
 }
+
 
