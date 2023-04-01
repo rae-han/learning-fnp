@@ -115,6 +115,36 @@ L.filter = curry(function* (fn, iter) {
   }
 })
 
+// const queryStr = pipe(
+//   Object.entries,
+//   map(([k, v]) => `${k}=${v}`),
+//   reduce((acc, cur) => `${acc}&${cur}`),
+// )
+
+const join = curry((sep = ',', iter) => reduce((a, b) => `${a}${sep}${b}`, iter));
+const queryStr = pipe(
+  Object.entries,
+  map(([k, v]) => `${k}=${v}`),
+  join('&'),
+)
+
+L.entries = function *(obj) {
+  for (const k in obj) yield [k, obj[k]];
+};
+
+L.map = curry(function* (fn, iter) {
+  for (const a of iter) {
+    yield fn(a);
+  }
+})
+L.filter = curry(function* (fn, iter) {
+  for (const a of iter) {
+    if (fn(a)) yield a;
+  }
+})
+
+const takeAll = take(Infinity);
+
 export {
   log,
   add,
@@ -128,6 +158,9 @@ export {
   sum,
   range,
   take,
+  takeAll,
+  queryStr,
+  join,
 }
 
 
