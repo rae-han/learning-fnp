@@ -4,7 +4,8 @@ import { curry, go, L, log, pipe, take, takeAll } from '../fx.js'
 // 배열을 다 펼쳐서 하나의 배열로 만들기 위한 함수.
 // L.flatten은 그걸 지연해서 하는 함수.
 
-const isIterable = a => a && a[Symbol.iterator];
+// const isIterable = a => a && a[Symbol.iterator];
+const isIterable = a => !!a?.[Symbol.iterator]
 // 간단하게 Symbol iterable이 있는지 확인. && 앞은 nullable 값인지 확인
 
 L.flatten = function* (iter) {
@@ -18,6 +19,7 @@ L.flatten = function* (iter) {
 }
 
 const it = L.flatten([[1, 2], 3, 4, [5, 6, 7], 8]);
+console.log(22, it)
 log(it.next())
 log(it.next())
 log(...it); // 이터레이터므로 한번에 펼쳐 줄 수 있ㄷ.
@@ -27,10 +29,42 @@ log(...it); // 이터레이터므로 한번에 펼쳐 줄 수 있ㄷ.
 const flatten = pipe(
   L.flatten,
   takeAll,
-  log
 )
 
-flatten([[1, 2], 3, 4, [5, 6, 7], 8])
+log(flatten([[1, 2], 3, 4, [5, 6, 7], 8]))
 
 // 추가로 L.flatten 은 지연동작 하기 때문에 아래와 같이도 사용 가능하다.
 log(take(3, L.flatten([[1, 2], 3, 4, [5, 6, 7], 8])))
+
+L.flatten = function* (iter) {
+  for (const a of iter) {
+    if (isIterable(a)) yield* a;
+    else yield a;
+  }
+};
+
+log(take(3, L.flatten([[1, 2], 3, 4, [5, 6, 7], 8])))
+
+L.deepFlat = function* fn(iter) {
+  for (const a of iter) {
+    if (isIterable(a)) yield* fn(a);
+    else yield a;
+  }
+};
+log([...L.deepFlat([[1, 2], [[3, 4], [5, [[6], 7]], 8]])]);
+
+L.deepFlat = function* fn(iter) {
+  for (const a of iter) {
+    if (isIterable(a)) {
+      for (const b of fn(a)) {
+        yield b;
+      }
+    } else {
+      yield a;
+    }
+  }
+};
+log([...L.deepFlat([[1, 2], [[3, 4], [5, [[6], 7]], 8]])]);
+
+
+

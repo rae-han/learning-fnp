@@ -145,6 +145,27 @@ L.filter = curry(function* (fn, iter) {
 
 const takeAll = take(Infinity);
 
+const isIterable = a => a && a[Symbol.iterator];
+
+L.flatten = function* (iter) {
+  for (const a of iter) {
+    if (isIterable(a)) yield* a;
+    else yield a;
+  }
+};
+
+const flatten = pipe(
+  L.flatten,
+  takeAll,
+)
+
+L.deepFlat = function* fn(iter) {
+  for (const a of iter) {
+    if (isIterable(a)) yield* fn(a);
+    else yield a;
+  }
+};
+
 export {
   log,
   add,
@@ -161,6 +182,8 @@ export {
   takeAll,
   queryStr,
   join,
+  isIterable,
+  flatten,
 }
 
 
