@@ -112,6 +112,57 @@ L.filter = curry(function* (fn, iter) {
   }
 });
 
+// const queryStr = pipe(
+//   Object.entries,
+//   map(([k, v]) => `${k}=${v}`),
+//   reduce((acc, cur) => `${acc}&${cur}`),
+// )
+
+const join = curry((sep = ',', iter) => reduce((a, b) => `${a}${sep}${b}`, iter));
+const queryStr = pipe(
+  Object.entries,
+  map(([k, v]) => `${k}=${v}`),
+  join('&'),
+)
+
+L.entries = function *(obj) {
+  for (const k in obj) yield [k, obj[k]];
+};
+
+L.map = curry(function* (fn, iter) {
+  for (const a of iter) {
+    yield fn(a);
+  }
+})
+L.filter = curry(function* (fn, iter) {
+  for (const a of iter) {
+    if (fn(a)) yield a;
+  }
+})
+
+const takeAll = take(Infinity);
+
+const isIterable = a => a && a[Symbol.iterator];
+
+L.flatten = function* (iter) {
+  for (const a of iter) {
+    if (isIterable(a)) yield* a;
+    else yield a;
+  }
+};
+
+const flatten = pipe(
+  L.flatten,
+  takeAll,
+)
+
+L.deepFlat = function* fn(iter) {
+  for (const a of iter) {
+    if (isIterable(a)) yield* fn(a);
+    else yield a;
+  }
+};
+
 export {
   log,
   add,
@@ -125,6 +176,11 @@ export {
   sum,
   range,
   take,
+  takeAll,
+  queryStr,
+  join,
+  isIterable,
+  flatten,
 }
 
 
