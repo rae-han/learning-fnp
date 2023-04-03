@@ -5,3 +5,4 @@ export const products = [
   {name: '후드티', price: 30000, quantity: 4, is_selected: false},
   {name: '바지', price: 25000, quantity: 5, is_selected: false}
 ];
+

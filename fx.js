@@ -57,9 +57,6 @@ const go = (...args) => reduce((acc, fn) => {
   return fn(acc)
 }, args);
 
-// const pipe1 = (...fns) => (arg) => go(arg, ...fns)
-// const pipe2 = (func, ...fns) => (...args) => go(func(...args), ...fns)
-
 const pipe = (func, ...fns) => (...args) => go(func(...args), ...fns)
 
 const sum = (fn, args) => pipe(
@@ -105,7 +102,7 @@ L.map = curry(function* (fn, iter) {
   for (const a of iter) {
     yield fn(a);
   }
-})
+});
 
 L.filter = curry(function* (fn, iter) {
   for (const i of iter) {
@@ -113,7 +110,7 @@ L.filter = curry(function* (fn, iter) {
       yield i;
     }
   }
-})
+});
 
 export {
   log,
