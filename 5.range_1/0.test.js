@@ -72,4 +72,4 @@ log(111, L.flatMap(map(a =>  a * a), value));
 // L.flatMap 실행
 // L.flatMap에 인자가 2개 들어가기 때문에 사실상 curry로 감싼 의미는 없음
 // pipe는 go와 다르게 인자를 바로 받아 실행하지 않고 인자가 들어오면 실행시킬 함수를 준비함
-// 
+//
