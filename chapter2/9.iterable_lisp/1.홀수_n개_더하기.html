@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+
+  <script src="../fxjs.js" ></script>
+
+  <script>
+    // # 홀수 n개 더하기
+    function f1(limit, list) {
+      let acc = 0;
+      for (const a of list) {
+        if (a % 2) {
+          const b = a * a;
+          acc += b;
+          if (--limit === 0) break;
+        }
+      }
+
+      console.log(1, acc); // 35
+    }
+
+    f1(3, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+
+    // # if 대신 filter를 사용하기
+    function f2(limit, list) {
+      let acc = 0;
+      for (const a of L.filter(a => a % 2, list)) {
+        const b = a * a;
+        acc += b;
+        if (--limit === 0) break;
+      }
+
+      console.log(2, acc); // 35
+    }
+
+    f2(3, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+
+    // # 값 변화 후 변수 할당은 map으로
+    function f3(limit, list) {
+      let acc = 0;
+      for (const a of L.map(a => a * a, L.filter(a => a % 2, list))) {
+        acc += a;
+        if (--limit === 0) break;
+      }
+
+      console.log(3, acc); // 35
+    }
+
+    f3(3, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+
+    // # break는 take로
+    function f4(limit, list) {
+      let acc = 0;
+      for (const a of L.take(limit, L.map(a => a * a, L.filter(a => a % 2, list)))) {
+        acc += a;
+      }
+
+      console.log(4, acc); // 35
+    }
+
+    f4(3, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+
+    // # 축약 및 합산은 reduce로
+    function f5(limit, list) {
+      const acc = _.reduce(
+        (acc, a) => acc + a, 0,
+        L.take(limit,
+          L.map(a => a * a,
+            L.filter(a => a % 2, list)))
+      )
+
+      console.log(5, acc); // 35
+    }
+
+    f5(3, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+
+    // # 정리
+    const add = (a, b) => a + b;
+
+    function f6(limit, list) {
+      const acc = _.reduce(
+        add,
+        L.take(limit,
+          L.map(a => a * a,
+            L.filter(a => a % 2, list)))
+      )
+
+      console.log(6, acc); // 35
+    }
+
+    f6(3, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+
+    function f7(limit, list) {
+      _.go(
+        list,
+        L.filter(a => a % 2),
+        L.map(a => a * a),
+        L.take(limit),
+        _.reduce(add),
+        console.log
+      )
+    }
+
+    f7(3, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+  </script>
+</head>
+<body>
+
+</body>
+</html>

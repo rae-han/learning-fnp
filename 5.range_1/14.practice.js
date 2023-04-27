@@ -1,6 +1,6 @@
-import { go, L, log, take, takeAll } from '../fx.js';
+import { go, L, log, map, take, takeAll } from '../fx.js';
 
-var users = [
+let users = [
   {
     name: 'a', age: 21, family: [
       {name: 'a1', age: 53}, {name: 'a2', age: 47},
@@ -31,7 +31,7 @@ go(
   L.map(u => u.family),
   L.flatten,
   L.filter(u => u.age < 20),
-  L.map(u => u.name),
+  L. map(u => u.name),
   take(4),
   log
 )
